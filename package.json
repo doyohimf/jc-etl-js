@@ -1,0 +1,50 @@
+{
+  "name": "hr-etl-system",
+  "version": "1.0.0",
+  "description": "ETL system for HR data integration",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=runFullETL",
+    "setup": "node scripts/setup.js",
+    "setup-tables": "node scripts/createTables.js",
+    "setup-with-sample": "node scripts/createTables.js --sample-data",
+    "etl": "node scripts/runETL.js",
+    "etl-full": "node scripts/runETL.js --full",
+    "etl-incremental": "node scripts/runETL.js --incremental",
+    "quality-check": "node scripts/dataQualityCheck.js",
+    "health-check": "node scripts/healthCheck.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "deploy": "npm run setup-tables && gcloud functions deploy runFullETL --runtime nodejs18 --trigger-http --memory=512MB --timeout=540s",
+    "deploy:webhook": "gcloud functions deploy webhookHandler --runtime nodejs18 --trigger-http --memory=256MB --timeout=120s",
+    "deploy:monitoring": "gcloud functions deploy dataQualityCheck --runtime nodejs18 --trigger-http --memory=256MB --timeout=60s",
+    "deploy:all": "npm run deploy && npm run deploy:webhook && npm run deploy:monitoring",
+    "local:etl": "curl -X GET http://localhost:8080",
+    "local:webhook": "curl -X POST http://localhost:8080 -H 'Content-Type: application/json' -d '{\"source\": \"test\", \"data\": {\"employee_id\": \"TEST001\"}}'",
+    "logs": "gcloud functions logs read runFullETL --limit=50",
+    "logs:webhook": "gcloud functions logs read webhookHandler --limit=50",
+    "logs:monitoring": "gcloud functions logs read dataQualityCheck --limit=50",
+    "clean": "rm -rf node_modules coverage .nyc_output",
+    "reset-data": "node scripts/resetData.js"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.0.0",
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/secret-manager": "^5.0.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.6.1",
+    "googleapis": "^140.0.0",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "engines": {
+    "node": "20"
+  }
+}

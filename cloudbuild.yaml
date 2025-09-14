@@ -1,0 +1,39 @@
+steps:
+  # Install dependencies
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['install']
+
+  # Deploy ETL function
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'runETL'
+      - '--runtime=nodejs18'
+      - '--trigger-http'
+      - '--allow-unauthenticated'
+      - '--memory=512MB'
+      - '--timeout=540s'
+      - '--region=${_REGION}'
+      - '--set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},NODE_ENV=${_NODE_ENV}'
+
+  # Deploy webhook handler
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'webhookHandler'
+      - '--runtime=nodejs18'
+      - '--trigger-http'
+      - '--allow-unauthenticated'
+      - '--memory=256MB'
+      - '--timeout=120s'
+      - '--region=${_REGION}'
+      - '--set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},NODE_ENV=${_NODE_ENV}'
+
+substitutions:
+  _REGION: asia-southeast1   # change as needed
+  _NODE_ENV: production
