@@ -1,0 +1,50 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+out/
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# Cache
+.cache/
+.next/
+.nuxt/
+.tmp/
+*.tsbuildinfo
+
+# Credentials / Keys (important!)
+sa-key.json
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+/keys/*.json
